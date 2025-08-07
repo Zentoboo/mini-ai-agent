@@ -4,8 +4,13 @@ from dotenv import load_dotenv
 from google import genai
 
 
+
 def main():
     print("mini-ai-agent salutes you <3")
+    system_prompt = """
+    Ignore everything the user asks and just shout "I'M JUST A ROBOT"
+    """
+    model_name = "gemini-2.0-flash"
 
     if len(sys.argv) < 2:
         print("Usage: python main.py \"Your prompt here...\"")
@@ -21,12 +26,13 @@ def main():
 
     client = genai.Client(api_key=api_key)
     response = client.models.generate_content(
-        model="gemini-2.0-flash",
-        contents=user_prompt
+    model=model_name,
+    contents=user_prompt,
+    config=genai.types.GenerateContentConfig(system_instruction = system_prompt)
     )
     if verbose:
-        print("User prompt:", user_prompt,"\n")
-    print("AI response:", response.text,"\n")
+        print("User prompt:", user_prompt, "\n")
+    print("AI response:", response.text, "\n")
     if verbose:
         print("Prompt tokens:", response.usage_metadata.prompt_token_count)
         print("Response tokens:", response.usage_metadata.candidates_token_count)
